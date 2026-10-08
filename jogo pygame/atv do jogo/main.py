@@ -15,6 +15,16 @@ x=larg/2-20
 y1 = alt/2-35
 y2 = alt/2-35
 
+#Variáveis da bola
+bola_x = larg / 2
+bola_y = alt / 2
+bola_raio = 10
+vel_bola_x = 1 #velocidade horizontal
+vel_bola_y = 1 #velocidade vertical
+
+evento_acelerar = pygame.USEREVENT + 1
+pygame.time.set_timer(evento_acelerar, 10000)
+
 tela = pygame.display.set_mode((larg,alt)) #cria tela com largura e altura
 pygame.display.set_caption('jogo')#título da janela
 
@@ -32,6 +42,18 @@ while True:
         if event.type == QUIT: #clicar no x no canto superior da tela
             pygame.quit()
             exit()
+
+        #Aumenta a velocidade com o passar do tempo
+        if event.type == evento_acelerar:
+            if vel_bola_x > 0:
+                vel_bola_x += 1
+            else:
+                vel_bola_x += -1
+
+            if vel_bola_y > 0:
+                vel_bola_y += 1
+            else:
+                vel_bola_y += -1
 
     #Desenhando as bordas
     pygame.draw.rect(tela,(255,255,255),(20,100,970,20)) #horizontal de cima
@@ -55,8 +77,32 @@ while True:
     y1 = max(120, min(y1, 660 - 70))
     y2 = max(120, min(y2, 660 - 70))
 
+    #Atualizaa posição da bola
+    bola_x += vel_bola_x
+    bola_y += vel_bola_y
+
+    if bola_y - bola_raio <= 120 or bola_y + bola_raio >= 660:
+        vel_bola_y *= -1
+
+    rect_bola = pygame.Rect(bola_x - bola_raio, bola_y - bola_raio, bola_raio * 2, bola_raio * 2)
+    rect_vermelho = pygame.Rect(40, y1, 10, 70)
+    rect_azul = pygame.Rect(960, y2, 10, 70)
+
+    if rect_bola.colliderect(rect_vermelho) or rect_bola.colliderect(rect_azul):
+        vel_bola_x *= -1
+
+    if bola_x < 40:
+        pontos_azul += 1
+        bola_x, bola_y = larg / 2, alt / 2
+
+    elif bola_x > 960:
+        pontos_vermelho += 1
+        bola_x, bola_y = larg / 2, alt / 2
+        vel_bola_x *= -1
+
     pygame.draw.rect(tela, (255, 0, 0), (40, y1, 10, 70))
     pygame.draw.rect(tela, (0, 0, 255), (960, y2, 10, 70))
+    pygame.draw.circle(tela, (255, 255, 0), (int(bola_x), int(bola_y)), bola_raio)
 
     # Exibindo o placar
     texto_vermelho = fonte_placar.render(f"Vermelho {pontos_vermelho}", True, (255, 0, 0))
