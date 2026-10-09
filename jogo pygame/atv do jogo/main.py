@@ -81,24 +81,40 @@ while True:
     bola_x += vel_bola_x
     bola_y += vel_bola_y
 
+    #Colisão com as bordas(teto e chão)
     if bola_y - bola_raio <= 120 or bola_y + bola_raio >= 660:
         vel_bola_y *= -1
 
+    #Criando os retângulos para checar colisão
     rect_bola = pygame.Rect(bola_x - bola_raio, bola_y - bola_raio, bola_raio * 2, bola_raio * 2)
     rect_vermelho = pygame.Rect(40, y1, 10, 70)
     rect_azul = pygame.Rect(960, y2, 10, 70)
 
+    #Checando colisão da bola com as raquetes
     if rect_bola.colliderect(rect_vermelho) or rect_bola.colliderect(rect_azul):
         vel_bola_x *= -1
 
-    if bola_x < 40:
+    #Verificando pontuação(passou das raquetes)
+    if bola_x < 40: # azul marca ponto
         pontos_azul += 1
-        bola_x, bola_y = larg / 2, alt / 2
+        bola_x, bola_y = larg / 2, alt / 2 #volta pro centro
+        vel_bola_x = 1 #reseta a velocidade e saca pra direita
 
-    elif bola_x > 960:
+        if vel_bola_y > 0: #reseta o y mantendo direção
+            vel_bola_y = 1
+        else:
+            vel_bola_y = -1
+
+    elif bola_x > 960: #vermelho marca ponto
         pontos_vermelho += 1
         bola_x, bola_y = larg / 2, alt / 2
-        vel_bola_x *= -1
+        vel_bola_x = -1 #reseta a velocidade e saca pra esquerda
+
+        if vel_bola_y > 0: #mesma coisa de antes
+            vel_bola_y = 1
+        else:
+            vel_bola_y = -1
+        
 
     pygame.draw.rect(tela, (255, 0, 0), (40, y1, 10, 70))
     pygame.draw.rect(tela, (0, 0, 255), (960, y2, 10, 70))
