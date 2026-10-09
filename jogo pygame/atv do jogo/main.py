@@ -34,7 +34,7 @@ pontos_azul = 0
 
 #todo jogo fica em um loop infinito
 while True:
-    relogio.tick(200) #5 frames por segundo
+    relogio.tick(100) #5 frames por segundo
     tela.fill((0,150,0))
     #loop para checar se um evento ocorreu
     #pygame.event.get() - lista de eventos capturados pelo pygame
