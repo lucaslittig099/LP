@@ -43,6 +43,10 @@ def raio(a):
         d += 0.02
     return d
 
+pygame.mouse.set_visible(False)
+pygame.event.set_grab(True)
+sensibilidade_mouse = 0.0025
+
 rodando = True
 while rodando:
     for evento in pygame.event.get():
@@ -53,14 +57,20 @@ while rodando:
                 tiro = 6
             if evento.key == pygame.K_ESCAPE:
                 rodando = False
+        if evento.type == pygame.MOUSEMOTION:
+            dx, _ = evento.rel
+            angulo += dx * sensibilidade_mouse
+        if evento.type == pygame.MOUSEBUTTONDOWN:
+            if evento.button == 1:
+                tiro = 6
 
     teclas = pygame.key.get_pressed()
-    giro = teclas[pygame.K_d] - teclas[pygame.K_a]
-    angulo += giro * 0.05
+    lado = teclas[pygame.K_d] - teclas[pygame.K_a]
+    passo_lado = lado * 0.04
     frente = teclas[pygame.K_w] - teclas[pygame.K_s]
     passo = frente * 0.08
-    dx = math.cos(angulo) * passo
-    dy = math.sin(angulo) * passo
+    dx = math.cos(angulo) * passo + math.cos(angulo + math.pi/2) * passo_lado
+    dy = math.sin(angulo) * passo + math.sin(angulo + math.pi/2) * passo_lado
     if not parede(x + dx * 4, y):
         x += dx
     if not parede(x, y + dy * 4):
@@ -70,7 +80,7 @@ while rodando:
     tela.fill("gray10")
     pygame.draw.rect(tela, "sienna4", (0, meia_altura, largura_tela, meia_altura))
     
-    # Raycasting (Paredes)
+    # Paredes
     distancias = []
     for i in range(colunas):
         a = angulo - campo_visao / 2 + campo_visao * i / colunas
@@ -105,10 +115,10 @@ while rodando:
         altura = altura_tela / distancia
         corpo = pygame.Rect(0, 0, altura * 0.5, altura * 0.7)
         corpo.midbottom = (sx, meia_altura + altura / 2)
-        pygame.draw.ellipse(tela, "darkred", corpo)
+        pygame.draw.ellipse(tela, "black", corpo)
         for ox in (sx - altura * 0.1, sx + altura * 0.1):
             olho = (ox, corpo.y + altura * 0.2)
-            pygame.draw.circle(tela, "gold", olho, altura / 20)
+            pygame.draw.circle(tela, "red", olho, altura / 20)
         if tiro == 6 and abs(sx - meia_largura) < altura * 0.25:
             inimigos.remove(inimigo)
             tiro = 5
