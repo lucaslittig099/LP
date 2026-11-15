@@ -9,6 +9,7 @@ pasta_sprites = pasta_assets / 'sprites'
 pasta_sons = pasta_assets / 'sounds'
 
 #Inicio
+pg.mixer.pre_init(44100, -16, 2, 512)
 pg.init()
 largura = 1280
 altura = 720
@@ -25,6 +26,24 @@ example_gif = gif_pygame.load(caminho_gif)
 
 
 gif_pygame.transform.scale(example_gif, (largura, altura))
+
+#Audios
+#Musica de fundo
+pg.mixer.music.load(pasta_sons / "som_fundo.mp3")
+pg.mixer.music.set_volume(0.4)
+pg.mixer.music.play(-1)
+
+gol_som = pg.mixer.Sound(pasta_sons / "som_gol.wav")
+gol_som.set_volume(0.4)
+
+rede_som = pg.mixer.Sound(pasta_sons / "som_rede.wav")
+rede_som.set_volume(0.4)
+
+apito_som = pg.mixer.Sound(pasta_sons / "apito.wav")
+apito_som.set_volume(0.4)
+
+toque_som = pg.mixer.Sound(pasta_sons / "som_toque.wav")
+toque_som.set_volume(0.4)
 
 # Classes Sprites
 class Peca(pg.sprite.Sprite):
@@ -58,7 +77,7 @@ while True:
             
     # Comemoração
     
-    '''example_gif.render(tela, (0, 0))
+    example_gif.render(tela, (0, 0))
     todos_sprites.draw(tela)
     pg.display.flip()
     relogio.tick(60)
@@ -67,7 +86,4 @@ while True:
     tela.blit(fundo, (0,0))
     todos_sprites.draw(tela)
     pg.display.flip()
-    relogio.tick(60)
-    
-    
-    
+    relogio.tick(60)'''
